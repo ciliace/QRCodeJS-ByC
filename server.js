@@ -68,4 +68,6 @@ app.post('/qrcode',(req, res) =>{
 
 });
 
-app.listen(1337)
+//app.listen(1337)
+
+module.exports = app;
