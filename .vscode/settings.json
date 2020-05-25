@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/8a455956-2dad-4d47-a9ef-b1f7b2b930a2/resourceGroups/EMEA_TEs/providers/Microsoft.Web/sites/QRCodeNodeJSApp-ByC",
+    "appService.deploySubpath": ""
+}
