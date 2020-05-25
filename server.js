@@ -41,7 +41,7 @@ async function main() {
 
   });
 
-  app.post('/qrcode',(req, res) =>{
+  app.post('/qrcode', async (req, res) =>{
     let text = req.body.text || 'test';
     let type = req.body.type || 'image/png';
     let margin = req.body.margin || 1;
