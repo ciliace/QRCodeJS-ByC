@@ -12,61 +12,58 @@ async function main() {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
 
-  app.get('/:qrcode', async (req, res) =>{
-      //res.send('TEST')
-      let text = req.params.qrcode;
+  app.get('/:text', async (req, res) =>{
 
-      var opts = {
-        errorCorrectionLevel: 'H',
-        type: 'image/png',
-        quality: 0.3,
-        margin: 1,
-        color: {
-          dark:"#010599FF",
-          light:"#FFBF60FF"
-        }
-      }
-      
-      QRCode.toDataURL(text, opts, (err, url)=>{
+    // Text
+    let text = req.params.text;
 
-          let data = url.replace(/.*,/,'');
-          //console.log(data)
-          let img = new Buffer.from(data,'base64');
-          res.writeHead(200,{
-              'Content-Type' : 'image/png',
-              'Content-Length' : img.length
-          })
-          res.end(img)
-      })
-
-  });
-
-  app.post('/qrcode', async (req, res) =>{
-    let text = req.body.text || 'test';
-    let type = req.body.type || 'image/png';
-    let margin = req.body.margin || 1;
-    let quality = req.body.quality || 0.3;
-    let darkcolor = req.body.darkcolor || '#010599FF';
-    let lightcolor = req.body.lightcolor || '#FFBF60FF';
-
+    // Options :
     var opts = {
-      errorCorrectionLevel: 'H',
-      type: type,
-      quality: 0.3,
-      margin: 1,
+      errorCorrectionLevel: req.query.errorCorrectionLevel || 'H',
+      type: req.query.type ||'image/png',
+      width: req.query.width || 200,
+      quality: req.query.quality || 0.3,
+      margin: req.query.margin || 1,
       color: {
-        dark: darkcolor,
-        light: lightcolor
+        dark: req.query.darkColor || "#010599FF",
+        light: req.query.lightColor ||"#FFBF60FF"
       }
     }
     
     QRCode.toDataURL(text, opts, (err, url)=>{
+      let data = url.replace(/.*,/,'');
+      let img = new Buffer.from(data,'base64');
+      res.writeHead(200,{
+          'Content-Type' : opts.type,
+          'Content-Length' : img.length
+      })
+      res.end(img)
+    })
 
+  });
+
+  app.post('/api/generate', async (req, res) =>{
+
+    let text = req.body.text;
+
+    var opts = {
+      errorCorrectionLevel: req.body.errorCorrectionLevel || 'H',
+      type: req.body.type ||'image/png',
+      width: req.body.width || 200,
+      quality: req.body.quality || 0.3,
+      margin: req.body.margin || 1,
+      color: {
+        dark: req.body.darkColor || "#010599FF",
+        light: req.body.lightColor ||"#FFBF60FF"
+      }
+    }
+    
+    QRCode.toDataURL(text, opts, (err, url)=>{
         let data = url.replace(/.*,/,'');
         //console.log(data)
         let img = new Buffer.from(data,'base64');
         res.writeHead(200,{
-            'Content-Type' : 'image/png',
+            'Content-Type' : opts.type,
             'Content-Length' : img.length
         })
         res.end(img)
